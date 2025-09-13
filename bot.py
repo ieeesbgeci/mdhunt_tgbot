@@ -1,8 +1,30 @@
 
 import os
+import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ConversationHandler, ContextTypes
 from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Set up logging
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+
+async def error_handler(update, context):
+    """Log the error and notify the owner."""
+    logging.error(msg="Exception while handling an update:", exc_info=context.error)
+    # Notify the owner
+    try:
+        await context.bot.send_message(
+            chat_id=OWNER_USER_ID,
+            text=f"⚠️ Bot error: {context.error}"
+        )
+    except Exception as notify_error:
+        logging.error(f"Failed to notify owner: {notify_error}")
 
 
 # Load environment variables
@@ -136,6 +158,7 @@ def main() -> None:
     )
 
     app.add_handler(conv_handler)
+    app.add_error_handler(error_handler)
     app.run_polling()
 
 if __name__ == "__main__":
