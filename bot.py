@@ -1,3 +1,13 @@
+import time
+RATE_LIMIT_SECONDS = 8  # Minimum seconds between messages per user
+
+def is_rate_limited(context):
+    now = time.time()
+    last_time = context.user_data.get('last_message_time', 0)
+    if now - last_time < RATE_LIMIT_SECONDS:
+        return True
+    context.user_data['last_message_time'] = now
+    return False
 
 import os
 import logging
@@ -41,6 +51,9 @@ ASK_KEY, ASK_NAME, ASK_TEAM, ASK_CONFIRM = range(4)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the /start command and initiate the key request."""
+    if is_rate_limited(context):
+        await update.message.reply_text("⏳ Please wait before sending another message.")
+        return ASK_KEY
     await update.message.reply_text(
         "☣️ Signal acquired."
         "The Core Directive is fractured."
@@ -51,6 +64,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def handle_key(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the user's key input."""
+    if is_rate_limited(context):
+        await update.message.reply_text("⏳ Please wait before sending another message.")
+        return ASK_KEY
     key = update.message.text.strip()
     if key == SECRET_KEY:
         await update.message.reply_text(
@@ -78,6 +94,9 @@ async def handle_key(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the user's name input."""
+    if is_rate_limited(context):
+        await update.message.reply_text("⏳ Please wait before sending another message.")
+        return ASK_NAME
     name = update.message.text.strip()
     context.user_data['name'] = name
     # Notify the owner
@@ -92,6 +111,9 @@ async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     return ASK_TEAM
 async def handle_team(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the user's team name input."""
+    if is_rate_limited(context):
+        await update.message.reply_text("⏳ Please wait before sending another message.")
+        return ASK_TEAM
     team_name = update.message.text.strip()
     context.user_data['team_name'] = team_name
     # Notify the owner
@@ -107,6 +129,9 @@ async def handle_team(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
 
 async def handle_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the user's confirmation for audio."""
+    if is_rate_limited(context):
+        await update.message.reply_text("⏳ Please wait before sending another message.")
+        return ASK_CONFIRM
     response = update.message.text.strip().lower()
     name = context.user_data.get('name', 'Survivor')
     if response in ['yes', 'y']:
