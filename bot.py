@@ -18,10 +18,12 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Set up logging
+# Set up logging to file and console
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+    level=logging.INFO,
+    filename='bot.log',  # Log file in bot directory
+    filemode='a'         # Append mode
 )
 
 async def error_handler(update, context):
