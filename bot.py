@@ -66,6 +66,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def handle_key(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the user's key input."""
+    user = update.effective_user
+    logging.info(f"Input from @{user.username} (ID: {user.id}) in handle_key: {update.message.text.strip()}")
     if is_rate_limited(context):
         await update.message.reply_text("⏳ Please wait 5s before sending another message.")
         return ASK_KEY
@@ -96,6 +98,8 @@ async def handle_key(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the user's name input."""
+    user = update.effective_user
+    logging.info(f"Input from @{user.username} (ID: {user.id}) in handle_name: {update.message.text.strip()}")
     if is_rate_limited(context):
         await update.message.reply_text("⏳ Please wait 5s before sending another message.")
         return ASK_NAME
@@ -113,6 +117,8 @@ async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     return ASK_TEAM
 async def handle_team(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the user's team name input."""
+    user = update.effective_user
+    logging.info(f"Input from @{user.username} (ID: {user.id}) in handle_team: {update.message.text.strip()}")
     if is_rate_limited(context):
         await update.message.reply_text("⏳ Please wait 5s before sending another message.")
         return ASK_TEAM
@@ -131,6 +137,8 @@ async def handle_team(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
 
 async def handle_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle the user's confirmation for audio."""
+    user = update.effective_user
+    logging.info(f"Input from @{user.username} (ID: {user.id}) in handle_confirm: {update.message.text.strip()}")
     if is_rate_limited(context):
         await update.message.reply_text("⏳ Please wait 5s before sending another message.")
         return ASK_CONFIRM
